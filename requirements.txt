@@ -1,2 +1,4 @@
 telebot~=0.0.5
 pyTelegramBotAPI~=4.29.1
+dotenv
+uvicorn

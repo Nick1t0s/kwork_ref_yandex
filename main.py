@@ -3,7 +3,7 @@ import os
 import telebot
 from telebot import types
 import configparser
-from database import *
+# from database import *
 from urllib.parse import urlparse
 from dotenv import load_dotenv
 
@@ -25,7 +25,7 @@ ref_data = {"ru": ru_ref,
             "kz": kz_ref,
             "kg": kg_ref,
             "by": by_ref}
-init_db()
+# init_db()
 def is_valid_url(url: str) -> bool:
     parsed = urlparse(url)
     return all([parsed.scheme, parsed.netloc]) or url[0] == "~" #Это фича!!!!
@@ -58,15 +58,13 @@ def change_text(message, country):
 def start(message):
     print("xxx")
     if message.chat.id == int(config["Telegram"]["admin_id"]):
-        total_clicks = get_total_clicks()
-        today_clicks = get_today_clicks()
+        # total_clicks = get_total_clicks()
+        # today_clicks = get_today_clicks()
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton("Изменить реф. ссылку", callback_data="change_ref"))
         markup.add(types.InlineKeyboardButton("Изменить текст сообщений", callback_data="change_text"))
-        markup.add(types.InlineKeyboardButton("Очистить статистику", callback_data="clear"))
-
         bot.send_message(message.chat.id,
-                         f"<b>Всего кликов: {total_clicks}\nСегодня кликов: {today_clicks}</b>",
+                         f"<b>Админ панель</b>",
                          reply_markup=markup,
                          parse_mode="HTML")
     else:
@@ -144,9 +142,12 @@ def callback(call):
             bot.delete_message(call.message.chat.id, call.message.id)
             start(call.message)
         else:
+            markup = types.InlineKeyboardMarkup()
+            markup.add((types.InlineKeyboardButton("❌ Назад", callback_data="back_change")))
             bot.send_message(call.message.chat.id,
                              "<b>Пришлите новый текст: </b>",
-                             parse_mode="HTML")
+                             parse_mode="HTML",
+                             reply_markup="start")
             bot.register_next_step_handler(call.message, change_text, country)
 
     elif call.data == "start":
@@ -154,13 +155,6 @@ def callback(call):
         bot.delete_message(call.message.chat.id, call.message.id-1)
         start(call.message)
 
-    elif call.data == "clear":
-        print(1)
-        clear()
-        print(2)
-        bot.delete_message(call.message.chat.id, call.message.id)
-        start(call.message)
-        print(3)
 
     else:
         print("else")
@@ -170,7 +164,7 @@ def callback(call):
             photo = f.read()
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton(
-            "🚀 Быстрая регистрация", url=f"{config['Telegram']['my_ip']}?redirect={ref_data[call.data]}&id={call.message.chat.id}"))
+            "🚀 Быстрая регистрация", url=ref_data[call.data]))
         markup.add(types.InlineKeyboardButton("🤝 Позвать друга",
                                               url="https://t.me/share/url?url=https://t.me/yandexeda_reg_bot&text=👋🏼"))
         markup.add(types.InlineKeyboardButton("🌍 Работа в других регионах", callback_data="another_reg"))
