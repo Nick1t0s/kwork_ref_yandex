@@ -37,7 +37,6 @@ def change_ref(message, country):
                          parse_mode="HTML")
         start(message)
     else:
-        print(val)
         config.set("Telegram", f"{country}_ref", message.text.strip("~"))
         with open("config.ini", "w", encoding="UTF-8") as f:
             config.write(f)
