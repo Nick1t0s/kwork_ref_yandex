@@ -47,7 +47,7 @@ def change_ref(message, country):
         start(message)
 
 def change_text(message, country):
-    with open(f"data\\{country}.txt", "w", encoding="UTF-8") as f:
+    with open(f"data/{country}.txt", "w", encoding="UTF-8") as f:
         f.write(message.text)
     bot.send_message(message.chat.id,
                      "<b>Ссылка была успешно изменена</b>",
@@ -76,7 +76,7 @@ def start(message):
         markup.add(types.InlineKeyboardButton("🇺🇿 Узбекистан", callback_data="uz"))
         markup.add(types.InlineKeyboardButton("🇧🇾 Беларусь", callback_data="by"))
         markup.add(types.InlineKeyboardButton("🇰🇿 Казахстан", callback_data="kz"))
-        with open("data\\start.jpg", "rb") as f:
+        with open("data/start.jpg", "rb") as f:
             photo = f.read()
         bot.send_photo(message.chat.id, photo=photo,
                        caption="<b>В какой стране ты будешь работать?</b>",
@@ -164,9 +164,9 @@ def callback(call):
 
     else:
         print("else")
-        with open(f"data\\{call.data}.txt", "r", encoding="UTF-8") as f:
+        with open(f"data/{call.data}.txt", "r", encoding="UTF-8") as f:
             text = f.read()
-        with open("data\\second.jpg", "rb") as f:
+        with open("data/second.jpg", "rb") as f:
             photo = f.read()
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton(
@@ -185,7 +185,4 @@ def another_message(message):
     start(message)
 
 while True:
-    try:
-        bot.polling(none_stop=True)
-    except:
-        pass
+    bot.polling(none_stop=True)
